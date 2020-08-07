@@ -1,0 +1,71 @@
+.custom {
+
+  .react-date-picker__inputGroup {
+    display: block;
+  }
+}
+
+.custom {
+
+  .react-date-picker__inputGroup {
+    display: none;
+  }
+}
+.box {
+  background: teal;
+  height: 100px;
+  width: 100px;
+}
+#mydiv {
+  position: absolute;
+  z-index: 9;
+  background-color: #f1f1f1;
+  border: 1px solid #d3d3d3;
+  text-align: center;
+  --resizeable-width: 300px;
+  width: var(--resizeable-width);
+  min-width: var(--min-width);
+  max-width: var(--max-width);
+}
+
+#mydivheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: #2196F3;
+  color: #fff;
+}
+
+#resizeable {
+  --resizeable-width: 300px;
+  height: 100vh;
+  width: var(--resizeable-width);
+  background-color: grey;
+}
+.handle{
+  height: 100%;
+  width: 1px;
+  background-color: blue;
+  z-index: 1;
+
+  &::after {
+    content: "";
+    width: 9px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -4px;
+    background-color: transparent;
+    cursor: ew-resize;
+    z-index: 2;
+  }
+
+  &.handle-right {
+    float: right;
+  }
+  &.handle-left {
+    float: left;
+  }
+}
+
+
