@@ -26,11 +26,8 @@ const Resizable = () => {
       // otherwise, move the DIV from anywhere inside the DIV:
       elmnt.onmousedown = dragMouseDown;
     }
-    // elmnt.onmousedown = dragMouseDown;
-
 
     function dragMouseDown(e) {
-      console.log('e', e)
 
       e = e || window.event;
       e.preventDefault();
@@ -80,36 +77,22 @@ const Resizable = () => {
     event.preventDefault();
     const startingPaneWidth = getPaneWidth();
     const xOffset = event.pageX;
-    console.log('xoffset = event.pageX', event.pageX)
-    console.log('startingPaneWidth', startingPaneWidth)
 
     const mouseDragHandler = (moveEvent) => {
       moveEvent.preventDefault();
-      console.log('moveEvent.pageX', moveEvent.pageX)
-
-      // const primaryButtonPressed = moveEvent.buttons === 1;
-      // console.log('primaryButtonPressed', primaryButtonPressed)
-      // if (!primaryButtonPressed) {
-      //   console.log('not primary')
-      //   setPaneWidth(Math.min(Math.max(getPaneWidth(), minPaneSize), maxPaneSize));
-      //   document.body.removeEventListener('pointermove', mouseDragHandler);
-      //   return;
-      // }
       const paneOriginAdjustment = direction === 'left' ? 1 : -1;
       const width = (xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth
-      // console.log('pane', paneOriginAdjustment, xOffset, moveEvent.pageX, startingPaneWidth, width)
 
-      // console.log('pane',ele.offsetLeft, startingPaneWidth - ((xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth))
       if (width >= minPaneSize && width <= maxPaneSize)
         setPaneWidth((xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth);
       direction === 'left' && dragElement(resizableElement)
       if (direction === 'left') {
-        // ele.style.left = (ele.offsetLeft + (startingPaneWidth - width)) + "px";
         if (width >= minPaneSize && width <= maxPaneSize) {
           resizableElement.style.left = (xOffset + (startingPaneWidth - getPaneWidth())) + "px"
         }
       }
     };
+
     window.addEventListener('mousemove', mouseDragHandler);
 
     const stopDragHandler = () => {
