@@ -1,43 +1,30 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 
-const Resizable = () => {
-  const [resizableElement, setResizableElement] = useState(null)
-  const [handleLeftElem, setHandleLeftElem] = useState(null)
-  const [handleRightElem, setHandleRightElem] = useState(null)
+const Resizable = ({children}) => {
+  const resizableElement = useRef(null)
+  const moveElement = useRef(null)
+  
+  // const [resizableElement, setResizableElement] = useState(null)
   useEffect(() => {
-    setResizableElement(document.getElementById("mydiv"))
-    setHandleLeftElem(document.getElementById("handleLeft"))
-    setHandleRightElem(document.getElementById("handleRight"))
+    // setResizableElement(document.getElementById("mydiv"))
   }, []);
 
   useEffect(() => {
     if (!!resizableElement) {
-      resizableElement.style.setProperty('--max-width', `${maxPaneSize}px`);
-      resizableElement.style.setProperty('--min-width', `${minPaneSize}px`);
+      resizableElement.current.style.setProperty('--max-width', `${maxPaneSize}px`);
+      resizableElement.current.style.setProperty('--min-width', `${minPaneSize}px`);
     }
   }, [resizableElement]);
 
-  const dragElement = (elmnt) => {
+  const startMoving = (e, elmnt) => {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
-      // if present, the header is where you move the DIV from:
-      document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-    } else {
-      // otherwise, move the DIV from anywhere inside the DIV:
-      elmnt.onmousedown = dragMouseDown;
-    }
 
-    function dragMouseDown(e) {
-
-      e = e || window.event;
-      e.preventDefault();
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
-    }
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
 
     function elementDrag(e) {
       e = e || window.event;
@@ -63,12 +50,12 @@ const Resizable = () => {
   const maxPaneSize = document.body.clientWidth * .5
 
   const setPaneWidth = (width) => {
-    resizableElement.style
+    resizableElement.current.style
       .setProperty('--resizeable-width', `${width}px`);
   };
 
   const getPaneWidth = () => {
-    const pxWidth = getComputedStyle(resizableElement)
+    const pxWidth = getComputedStyle(resizableElement.current)
       .getPropertyValue('--resizeable-width');
     return parseInt(pxWidth, 10);
   };
@@ -85,40 +72,34 @@ const Resizable = () => {
 
       if (width >= minPaneSize && width <= maxPaneSize)
         setPaneWidth((xOffset - moveEvent.pageX) * paneOriginAdjustment + startingPaneWidth);
-      direction === 'left' && dragElement(resizableElement)
+      // direction === 'left' && dragElement(resizableElement)
       if (direction === 'left') {
         if (width >= minPaneSize && width <= maxPaneSize) {
-          resizableElement.style.left = (xOffset + (startingPaneWidth - getPaneWidth())) + "px"
+          resizableElement.current.style.left = (xOffset + (startingPaneWidth - getPaneWidth())) + "px"
         }
       }
     };
 
-    window.addEventListener('mousemove', mouseDragHandler);
+    // window.addEventListener('mousemove', mouseDragHandler);
+    document.addEventListener('mousemove', mouseDragHandler);
 
     const stopDragHandler = () => {
       setPaneWidth(Math.min(Math.max(getPaneWidth(), minPaneSize), maxPaneSize));
-      window.removeEventListener('mousemove', mouseDragHandler);
+      document.removeEventListener('mousemove', mouseDragHandler);
     }
-    window.addEventListener('mouseup', stopDragHandler);
+    document.onmouseup = stopDragHandler;
 
   };
 
-
-
-  handleLeftElem && handleLeftElem.addEventListener('mousedown', (e) => startDragging(e, 'left'));
-  handleRightElem && handleRightElem.addEventListener('mousedown', (e) => startDragging(e, 'right'));
-
-  // console.log('doc', document)
-  resizableElement && dragElement(resizableElement)
+  // resizableElement && startMoving(resizableElement)
 
   return (
-    <div id="mydiv" className="box">
-      <div id="handleRight" className="handle handle-right"></div>
-      <div id="handleLeft" className="handle handle-left"></div>
-      <div id="mydivheader">Click here to move</div>
-
-        Box
-
+    <div id="mydiv" className="box" ref={resizableElement}>
+      <div id="handleRight" className="handle handle-right" onMouseDown={e => startDragging(e, 'right')}></div>
+      <div id="handleLeft" className="handle handle-left" onMouseDown={e => startDragging(e, 'left')}></div>
+      <div id="mydivheader" ref={moveElement} onMouseDown={e => startMoving(e, resizableElement.current)}>{
+        children
+      }</div>
     </div>
   )
 }

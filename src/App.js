@@ -4,11 +4,15 @@ import './App.scss';
 import Resizable from './Resizable';
 
 function App() {
- 
+
   return (
     <div className="App">
       Move and Resize Demo
-      <Resizable/>
+      <Resizable>
+        <div>
+          My original content
+        </div>
+      </Resizable>
     </div>
   );
 }
